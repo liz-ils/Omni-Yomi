@@ -1,0 +1,289 @@
+{
+  "summary": {
+    "model": "LiquidAI/LFM2.5-1.2B-JP-202606",
+    "n": 23,
+    "ok_rate": 1.0,
+    "avg_gold_recall": 0.094,
+    "avg_latency_s": 2.88,
+    "peak_vram_gb": 2.22
+  },
+  "items": [
+    {
+      "id": "name-01",
+      "ok": true,
+      "latency": 5.63,
+      "gold_recall": 0.6666666666666666,
+      "words": {
+        "明日": "アサ",
+        "明日香": "アスカ",
+        "日本橋": "ニホンバシ"
+      },
+      "gold": {
+        "明日": "アシタ",
+        "明日香": "アスカ",
+        "日本橋": "ニホンバシ"
+      }
+    },
+    {
+      "id": "name-02",
+      "ok": true,
+      "latency": 1.26,
+      "gold_recall": 0.5,
+      "words": {
+        "七瀬": "ナマ",
+        "心": "ココロ"
+      },
+      "gold": {
+        "七瀬": "ナナセ",
+        "心": "ココロ"
+      }
+    },
+    {
+      "id": "name-03",
+      "ok": true,
+      "latency": 1.68,
+      "gold_recall": 0.0,
+      "words": {
+        "一": "イチ",
+        "開いた": "カイダシタ"
+      },
+      "gold": {
+        "一": "ハジメ"
+      }
+    },
+    {
+      "id": "name-04",
+      "ok": true,
+      "latency": 2.25,
+      "gold_recall": 0.0,
+      "words": {},
+      "gold": {
+        "小鳥遊": "タカナシ"
+      }
+    },
+    {
+      "id": "name-05",
+      "ok": true,
+      "latency": 1.07,
+      "gold_recall": 0.0,
+      "words": {
+        "四月一日": "シテイチジツ"
+      },
+      "gold": {
+        "四月一日": "ワタヌキ"
+      }
+    },
+    {
+      "id": "place-01",
+      "ok": true,
+      "latency": 1.64,
+      "gold_recall": 0.0,
+      "words": {
+        "神田川": "ジンダンガワ"
+      },
+      "gold": {
+        "万世橋": "マンセイバシ"
+      }
+    },
+    {
+      "id": "place-02",
+      "ok": true,
+      "latency": 1.74,
+      "gold_recall": 0.0,
+      "words": {},
+      "gold": {
+        "放出": "ハナテン"
+      }
+    },
+    {
+      "id": "place-03",
+      "ok": true,
+      "latency": 3.57,
+      "gold_recall": 0.0,
+      "words": {
+        "会った": "マツラレタ"
+      },
+      "gold": {
+        "御手洗": "ミタライ"
+      }
+    },
+    {
+      "id": "num-01",
+      "ok": true,
+      "latency": 3.8,
+      "gold_recall": 0.0,
+      "words": {
+        "12月3日": "トウジサン",
+        "朝": "アサ"
+      },
+      "gold": {
+        "12月": "ジュウニガツ",
+        "3日": "ミッカ"
+      }
+    },
+    {
+      "id": "num-02",
+      "ok": true,
+      "latency": 3.27,
+      "gold_recall": 0.0,
+      "words": {},
+      "gold": {
+        "HP": "エイチピー"
+      }
+    },
+    {
+      "id": "num-03",
+      "ok": true,
+      "latency": 4.38,
+      "gold_recall": 0.0,
+      "words": {
+        "新幹線": "シンケン",
+        "乗った": "ノリタッタ"
+      },
+      "gold": {
+        "3時半": "サンジハン"
+      }
+    },
+    {
+      "id": "en-01",
+      "ok": true,
+      "latency": 4.46,
+      "gold_recall": 1.0,
+      "words": {
+        "は": "ハ",
+        "Alive": "アライブ",
+        "と": "ト",
+        "叫んだ": "サガンダ"
+      },
+      "gold": {
+        "Alive": "アライブ"
+      }
+    },
+    {
+      "id": "en-02",
+      "ok": true,
+      "latency": 1.58,
+      "gold_recall": 0.0,
+      "words": {
+        "軽い": "ケイタイ"
+      },
+      "gold": {
+        "PC": "ピーシー"
+      }
+    },
+    {
+      "id": "amb-01",
+      "ok": true,
+      "latency": 1.69,
+      "gold_recall": 0.0,
+      "words": {
+        "市場": "シテイマス"
+      },
+      "gold": {
+        "市場": "イチバ"
+      }
+    },
+    {
+      "id": "amb-02",
+      "ok": true,
+      "latency": 2.72,
+      "gold_recall": 0.0,
+      "words": {},
+      "gold": {
+        "一文": "イチモン"
+      }
+    },
+    {
+      "id": "amb-03",
+      "ok": true,
+      "latency": 3.18,
+      "gold_recall": 0.0,
+      "words": {},
+      "gold": {
+        "上手": "ウワテ"
+      }
+    },
+    {
+      "id": "amb-04",
+      "ok": true,
+      "latency": 2.62,
+      "gold_recall": 0.0,
+      "words": {},
+      "gold": {
+        "末席": "マッセキ"
+      }
+    },
+    {
+      "id": "amb-05",
+      "ok": true,
+      "latency": 4.23,
+      "gold_recall": 0.0,
+      "words": {},
+      "gold": {
+        "袂": "タモト",
+        "日本酒": "ニホンシュ"
+      }
+    },
+    {
+      "id": "amb-06",
+      "ok": true,
+      "latency": 4.23,
+      "gold_recall": 0.0,
+      "words": {
+        "昨日": "ワカシ",
+        "今日": "ニチ",
+        "明日": "メイジ",
+        "休み": "シュウミ"
+      },
+      "gold": {
+        "昨日": "キノウ",
+        "今日": "キョウ",
+        "明日": "アシタ"
+      }
+    },
+    {
+      "id": "neg-01",
+      "ok": true,
+      "latency": 3.11,
+      "gold_recall": 0.0,
+      "words": {
+        "逃げた": "エスカ"
+      },
+      "gold": {}
+    },
+    {
+      "id": "neg-02",
+      "ok": true,
+      "latency": 2.48,
+      "gold_recall": 0.0,
+      "words": {
+        "田舎": "サトバシ",
+        "夕方": "ユウガ",
+        "好き": "スキ"
+      },
+      "gold": {}
+    },
+    {
+      "id": "neg-03",
+      "ok": true,
+      "latency": 3.46,
+      "gold_recall": 0.0,
+      "words": {
+        "間もなく": "マモナラレル",
+        "発車": "ホウシテクル",
+        "します": "スル"
+      },
+      "gold": {}
+    },
+    {
+      "id": "neg-04",
+      "ok": true,
+      "latency": 2.29,
+      "gold_recall": 0.0,
+      "words": {
+        "おはよう": "オハヨウ"
+      },
+      "gold": {}
+    }
+  ]
+}

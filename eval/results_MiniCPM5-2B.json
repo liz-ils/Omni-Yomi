@@ -1,0 +1,241 @@
+{
+  "summary": {
+    "model": "openbmb/MiniCPM5-2B",
+    "n": 23,
+    "ok_rate": 0.348,
+    "avg_gold_recall": 0.174,
+    "avg_latency_s": 13.17,
+    "peak_vram_gb": 4.73
+  },
+  "items": [
+    {
+      "id": "name-01",
+      "ok": true,
+      "latency": 64.29,
+      "gold_recall": 0.0,
+      "words": {},
+      "gold": {
+        "明日": "アシタ",
+        "明日香": "アスカ",
+        "日本橋": "ニホンバシ"
+      }
+    },
+    {
+      "id": "name-02",
+      "ok": false,
+      "latency": 10.64,
+      "gold_recall": 0.0,
+      "words": {},
+      "gold": {
+        "七瀬": "ナナセ",
+        "心": "ココロ"
+      }
+    },
+    {
+      "id": "name-03",
+      "ok": false,
+      "latency": 10.85,
+      "gold_recall": 0.0,
+      "words": {},
+      "gold": {
+        "一": "ハジメ"
+      }
+    },
+    {
+      "id": "name-04",
+      "ok": false,
+      "latency": 11.0,
+      "gold_recall": 0.0,
+      "words": {},
+      "gold": {
+        "小鳥遊": "タカナシ"
+      }
+    },
+    {
+      "id": "name-05",
+      "ok": false,
+      "latency": 11.28,
+      "gold_recall": 0.0,
+      "words": {},
+      "gold": {
+        "四月一日": "ワタヌキ"
+      }
+    },
+    {
+      "id": "place-01",
+      "ok": false,
+      "latency": 9.97,
+      "gold_recall": 0.0,
+      "words": {},
+      "gold": {
+        "万世橋": "マンセイバシ"
+      }
+    },
+    {
+      "id": "place-02",
+      "ok": false,
+      "latency": 10.13,
+      "gold_recall": 0.0,
+      "words": {},
+      "gold": {
+        "放出": "ハナテン"
+      }
+    },
+    {
+      "id": "place-03",
+      "ok": true,
+      "latency": 10.98,
+      "gold_recall": 0.0,
+      "words": {},
+      "gold": {
+        "御手洗": "ミタライ"
+      }
+    },
+    {
+      "id": "num-01",
+      "ok": false,
+      "latency": 11.63,
+      "gold_recall": 0.0,
+      "words": {},
+      "gold": {
+        "12月": "ジュウニガツ",
+        "3日": "ミッカ"
+      }
+    },
+    {
+      "id": "num-02",
+      "ok": false,
+      "latency": 10.93,
+      "gold_recall": 0.0,
+      "words": {},
+      "gold": {
+        "HP": "エイチピー"
+      }
+    },
+    {
+      "id": "num-03",
+      "ok": true,
+      "latency": 11.57,
+      "gold_recall": 0.0,
+      "words": {},
+      "gold": {
+        "3時半": "サンジハン"
+      }
+    },
+    {
+      "id": "en-01",
+      "ok": false,
+      "latency": 10.28,
+      "gold_recall": 0.0,
+      "words": {},
+      "gold": {
+        "Alive": "アライブ"
+      }
+    },
+    {
+      "id": "en-02",
+      "ok": true,
+      "latency": 9.95,
+      "gold_recall": 0.0,
+      "words": {},
+      "gold": {
+        "PC": "ピーシー"
+      }
+    },
+    {
+      "id": "amb-01",
+      "ok": false,
+      "latency": 10.39,
+      "gold_recall": 0.0,
+      "words": {},
+      "gold": {
+        "市場": "イチバ"
+      }
+    },
+    {
+      "id": "amb-02",
+      "ok": false,
+      "latency": 11.36,
+      "gold_recall": 0.0,
+      "words": {},
+      "gold": {
+        "一文": "イチモン"
+      }
+    },
+    {
+      "id": "amb-03",
+      "ok": true,
+      "latency": 11.4,
+      "gold_recall": 0.0,
+      "words": {},
+      "gold": {
+        "上手": "ウワテ"
+      }
+    },
+    {
+      "id": "amb-04",
+      "ok": false,
+      "latency": 11.06,
+      "gold_recall": 0.0,
+      "words": {},
+      "gold": {
+        "末席": "マッセキ"
+      }
+    },
+    {
+      "id": "amb-05",
+      "ok": false,
+      "latency": 10.2,
+      "gold_recall": 0.0,
+      "words": {},
+      "gold": {
+        "袂": "タモト",
+        "日本酒": "ニホンシュ"
+      }
+    },
+    {
+      "id": "amb-06",
+      "ok": true,
+      "latency": 10.57,
+      "gold_recall": 0.0,
+      "words": {},
+      "gold": {
+        "昨日": "キノウ",
+        "今日": "キョウ",
+        "明日": "アシタ"
+      }
+    },
+    {
+      "id": "neg-01",
+      "ok": false,
+      "latency": 10.67,
+      "gold_recall": 1.0,
+      "words": {},
+      "gold": {}
+    },
+    {
+      "id": "neg-02",
+      "ok": true,
+      "latency": 11.96,
+      "gold_recall": 1.0,
+      "words": {},
+      "gold": {}
+    },
+    {
+      "id": "neg-03",
+      "ok": false,
+      "latency": 10.89,
+      "gold_recall": 1.0,
+      "words": {},
+      "gold": {}
+    },
+    {
+      "id": "neg-04",
+      "ok": true,
+      "latency": 10.92,
+      "gold_recall": 1.0,
+      "words": {},
+      "gold": {}
+    }
+  ]
+}

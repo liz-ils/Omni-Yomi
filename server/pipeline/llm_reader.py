@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import json
 import re
+from pathlib import Path
 
 import torch
 import yaml
@@ -47,6 +48,8 @@ def sanitize_words(text: str, words: object) -> dict[str, str]:
     for k, v in words.items():
         if not isinstance(k, str) or not isinstance(v, str) or k not in text:
             continue
+        if len(k) < 2:
+            continue  # particles and single kana carry no useful reading
         reading = _to_katakana(v)
         if _KATAKANA.fullmatch(reading) and len(reading) <= len(k) * 3 + 2:
             out[k] = reading
@@ -54,12 +57,16 @@ def sanitize_words(text: str, words: object) -> dict[str, str]:
 
 
 class LlmReader:
-    def __init__(self, config_path: str = "config.yaml") -> None:
+    def __init__(self, config_path: str = "config.yaml", model_override: str | None = None) -> None:
         with open(config_path, encoding="utf-8") as f:
             cfg = yaml.safe_load(f)["llm"]
-        self.model_id: str = cfg["model"]
+        self.model_id: str = model_override or cfg["model"]
         self.device: str = cfg.get("device", "cuda:0")
-        self.cache = JsonCache(cfg.get("cache", ".cache/llm_reader.json"))
+        cache_path = Path(cfg.get("cache", ".cache/llm_reader.json"))
+        if model_override:
+            slug = self.model_id.split("/")[-1].replace(".", "-")
+            cache_path = cache_path.with_name(f"{cache_path.stem}_{slug}{cache_path.suffix}")
+        self.cache = JsonCache(cache_path)
         self._tok = None
         self._model = None
 
