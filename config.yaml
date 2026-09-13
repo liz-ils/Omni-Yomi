@@ -1,5 +1,8 @@
 llm:
-  # Swappable: LiquidAI/LFM2.5-1.2B-JP-202606 (default) / openbmb/MiniCPM5-2B
+  # Active model. Switch at runtime via POST /llm/model or the UI.
   model: LiquidAI/LFM2.5-1.2B-JP-202606
+  available:
+    - LiquidAI/LFM2.5-1.2B-JP-202606
+    - openbmb/MiniCPM5-2B
   device: cuda:0
   cache: .cache/llm_reader.json

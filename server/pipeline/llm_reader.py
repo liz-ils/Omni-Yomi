@@ -56,14 +56,31 @@ def sanitize_words(text: str, words: object) -> dict[str, str]:
     return out
 
 
+_CURRENT_MODEL: str | None = None
+
+
+def set_current_model(model_id: str) -> None:
+    global _CURRENT_MODEL
+    _CURRENT_MODEL = model_id
+
+
+def current_model_id(config_path: str = "config.yaml") -> str:
+    if _CURRENT_MODEL:
+        return _CURRENT_MODEL
+    import yaml
+
+    with open(config_path, encoding="utf-8") as f:
+        return yaml.safe_load(f)["llm"]["model"]
+
+
 class LlmReader:
     def __init__(self, config_path: str = "config.yaml", model_override: str | None = None) -> None:
         with open(config_path, encoding="utf-8") as f:
             cfg = yaml.safe_load(f)["llm"]
-        self.model_id: str = model_override or cfg["model"]
+        self.model_id: str = model_override or _CURRENT_MODEL or cfg["model"]
         self.device: str = cfg.get("device", "cuda:0")
         cache_path = Path(cfg.get("cache", ".cache/llm_reader.json"))
-        if model_override:
+        if self.model_id != cfg["model"]:
             slug = self.model_id.split("/")[-1].replace(".", "-")
             cache_path = cache_path.with_name(f"{cache_path.stem}_{slug}{cache_path.suffix}")
         self.cache = JsonCache(cache_path)

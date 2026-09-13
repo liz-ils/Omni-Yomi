@@ -8,14 +8,13 @@ from pathlib import Path
 import numpy as np
 import soundfile as sf
 import yaml
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi import Body, FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.responses import Response
-from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from server.pipeline import cleaner, normalizer, splitter
 from server.pipeline.cleaner import load_rules
-from server.pipeline.llm_reader import LlmReader
+from server.pipeline.llm_reader import LlmReader, current_model_id
 from server.pipeline.normalizer import load_yomi
 from server.tts import (
     SAMPLE_RATE,
@@ -149,4 +148,55 @@ def list_voices() -> dict[str, object]:
     return {"voices": ["auto"] + names}
 
 
-app.mount("/", StaticFiles(directory="server/static", html=True), name="static")
+DICT_FILES = {"replace": Path("dict/user_replace.json"), "yomi": Path("dict/user_yomi.json")}
+
+
+@app.get("/dict/{name}")
+def dict_get(name: str) -> Response:
+    if name not in DICT_FILES:
+        raise HTTPException(404, "unknown dict")
+    return Response(content=DICT_FILES[name].read_text(encoding="utf-8"), media_type="application/json")
+
+
+@app.put("/dict/{name}")
+def dict_put(name: str, body: object = Body(...)) -> dict[str, object]:
+    from server.ui import _validate_dict
+
+    if name not in DICT_FILES:
+        raise HTTPException(404, "unknown dict")
+    try:
+        _validate_dict(name, body)
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+    import json as _json
+
+    DICT_FILES[name].write_text(_json.dumps(body, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return {"dict": name, "entries": len(body)}
+
+
+class LlmModelIn(BaseModel):
+    model: str
+
+
+@app.get("/llm/models")
+def llm_models() -> dict[str, object]:
+    with open("config.yaml", encoding="utf-8") as f:
+        cfg = yaml.safe_load(f)["llm"]
+    return {"active": current_model_id(), "available": cfg.get("available", [cfg["model"]])}
+
+
+@app.post("/llm/model")
+def llm_switch(body: LlmModelIn) -> dict[str, object]:
+    from server.ui import switch_model_fn
+
+    try:
+        return {"status": switch_model_fn(body.model)}
+    except Exception as e:
+        raise HTTPException(400, str(e))
+
+
+import gradio as gr
+
+from server.ui import build_blocks
+
+gr.mount_gradio_app(app, build_blocks(), path="/")

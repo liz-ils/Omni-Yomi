@@ -44,7 +44,10 @@ uv pip install omnivoice fugashi unidic-lite
 4. 拡張機能: `chrome://extensions` でデベロッパーモード→ `extension/` を読込
 
 API: `GET /health`, `POST /normalize/preview`, `POST /tts`,
-`POST /voices/register`, `GET /voices`
+`POST /voices/register`, `GET /voices`,
+`GET/PUT /dict/{replace,yomi}`, `GET /llm/models`, `POST /llm/model`
+
+辞書は `dict/*.json` (git管理)。操作ページの辞書欄またはAPIで編集する。
 
 ## 主要ライブラリ・クレジット
 
@@ -54,6 +57,7 @@ API: `GET /health`, `POST /normalize/preview`, `POST /tts`,
 | [PyTorch](https://pytorch.org/) | 推論基盤 | BSD-3-Clause |
 | [Transformers](https://huggingface.co/docs/transformers/) (Hugging Face) | LLM読込 | Apache-2.0 |
 | [FastAPI](https://fastapi.tiangolo.com/) / [Uvicorn](https://www.uvicorn.org/) | APIサーバー | MIT / BSD-3-Clause |
+| [Gradio](https://www.gradio.app/) | 操作ページ | Apache-2.0 |
 | [fugashi](https://github.com/polm/fugashi) + unidic-lite | 形態素解析・読み取得 | BSD-3-Clause (辞書は各配布条件に従う) |
 | [LFM2.5-1.2B-JP](https://huggingface.co/LiquidAI/LFM2.5-1.2B-JP-202606) (Liquid AI、モデル) | 既定の読み付けLLM | LFM License 1.0 (年商$10M超は商用不可) |
 | [MiniCPM5-2B](https://huggingface.co/openbmb/MiniCPM5-2B) (OpenBMB、モデル) | 切替用LLM | Apache-2.0 |

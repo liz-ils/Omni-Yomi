@@ -45,7 +45,10 @@ uv pip install omnivoice fugashi unidic-lite
 4. Extension: load `extension/` in developer mode via `chrome://extensions`
 
 API: `GET /health`, `POST /normalize/preview`, `POST /tts`,
-`POST /voices/register`, `GET /voices`
+`POST /voices/register`, `GET /voices`,
+`GET/PUT /dict/{replace,yomi}`, `GET /llm/models`, `POST /llm/model`
+
+Dictionaries live in `dict/*.json` (tracked by git). Edit them from the control page or via API.
 
 ## Credits
 
@@ -55,6 +58,7 @@ API: `GET /health`, `POST /normalize/preview`, `POST /tts`,
 | [PyTorch](https://pytorch.org/) | Inference backend | BSD-3-Clause |
 | [Transformers](https://huggingface.co/docs/transformers/) (Hugging Face) | LLM loading | Apache-2.0 |
 | [FastAPI](https://fastapi.tiangolo.com/) / [Uvicorn](https://www.uvicorn.org/) | API server | MIT / BSD-3-Clause |
+| [Gradio](https://www.gradio.app/) | Control page | Apache-2.0 |
 | [fugashi](https://github.com/polm/fugashi) + unidic-lite | Morphological analysis / readings | BSD-3-Clause (dictionaries follow their own terms) |
 | [LFM2.5-1.2B-JP](https://huggingface.co/LiquidAI/LFM2.5-1.2B-JP-202606) (Liquid AI, model) | Default reading LLM | LFM License 1.0 (no commercial use above $10M revenue) |
 | [MiniCPM5-2B](https://huggingface.co/openbmb/MiniCPM5-2B) (OpenBMB, model) | Alternative LLM | Apache-2.0 |
