@@ -18,6 +18,7 @@ from server.pipeline.llm_reader import LlmReader, current_model_id
 from server.pipeline.normalizer import load_yomi
 from server.tts import (
     SAMPLE_RATE,
+    TTS_LOCK,
     create_voice_prompt,
     generate,
     load_model,
@@ -112,17 +113,18 @@ def tts(body: TtsIn) -> Response:
             raise HTTPException(400, f"voice '{body.voice}' is not registered")
     silence = np.zeros(int(SAMPLE_RATE * 0.2), dtype=np.float32)
     parts = []
-    for chunk in chunks:
-        parts.append(
-            generate(
-                model,
-                chunk["spoken"],
-                speed=body.speed,
-                num_step=16,
-                **({"voice_clone_prompt": prompt} if prompt else {}),
+    with TTS_LOCK:
+        for chunk in chunks:
+            parts.append(
+                generate(
+                    model,
+                    chunk["spoken"],
+                    speed=body.speed,
+                    num_step=16,
+                    **({"voice_clone_prompt": prompt} if prompt else {}),
+                )
             )
-        )
-        parts.append(silence)
+            parts.append(silence)
     buf = io.BytesIO()
     sf.write(buf, np.concatenate(parts), SAMPLE_RATE, format="WAV")
     return Response(content=buf.getvalue(), media_type="audio/wav")

@@ -5,12 +5,15 @@ from pathlib import Path
 import numpy as np
 import soundfile as sf
 import torch
+from threading import Lock
 
 from omnivoice import OmniVoice, VoiceClonePrompt
 
 MODEL_ID = "k2-fsa/OmniVoice"
 SAMPLE_RATE = 24000
 VOICES_DIR = Path("voices")
+# Single CUDA model: serialize generation across concurrent requests.
+TTS_LOCK = Lock()
 
 
 def load_model(device: str = "cuda:0") -> OmniVoice:

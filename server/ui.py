@@ -12,6 +12,7 @@ from server.app import _get_tts, build_spoken
 from server.pipeline.llm_reader import current_model_id, set_current_model
 from server.tts import (
     SAMPLE_RATE,
+    TTS_LOCK,
     VOICES_DIR,
     create_voice_prompt,
     generate,
@@ -53,17 +54,18 @@ def tts_fn(text: str, speed: float, use_llm: bool, voice: str) -> str:
             raise gr.Error(f"voice '{voice}' is not registered")
     silence = np.zeros(int(SAMPLE_RATE * 0.2), dtype=np.float32)
     parts = []
-    for chunk in chunks:
-        parts.append(
-            generate(
-                model,
-                chunk["spoken"],
-                speed=speed,
-                num_step=16,
-                **({"voice_clone_prompt": prompt} if prompt else {}),
+    with TTS_LOCK:
+        for chunk in chunks:
+            parts.append(
+                generate(
+                    model,
+                    chunk["spoken"],
+                    speed=speed,
+                    num_step=16,
+                    **({"voice_clone_prompt": prompt} if prompt else {}),
+                )
             )
-        )
-        parts.append(silence)
+            parts.append(silence)
     OUT_WAV.parent.mkdir(parents=True, exist_ok=True)
     sf.write(str(OUT_WAV), np.concatenate(parts), SAMPLE_RATE)
     return str(OUT_WAV)
