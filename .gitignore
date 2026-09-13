@@ -1,0 +1,22 @@
+# Local plans / instructions (not for public)
+DEVELOPMENT_PLAN.md
+
+# Python / uv
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Secrets
+.env
+*.pem
+credentials.json
+
+# Local voices / audio (large, private)
+voices/
+*.wav
+*.mp3
+
+# Caches
+.cache/
+.huggingface/
