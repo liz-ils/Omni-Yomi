@@ -7,9 +7,11 @@ function status(text) {
   chrome.runtime.sendMessage({ target: "popup", type: "STATUS", text }).catch(() => {});
 }
 
-chrome.runtime.onMessage.addListener((msg) => {
+chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   if (!msg || msg.target !== "offscreen") return false;
-  if (msg.type === "PLAY") {
+  if (msg.type === "PING") {
+    sendResponse({ ok: true });
+  } else if (msg.type === "PLAY") {
     void play(msg);
   } else if (msg.type === "STOP") {
     player.pause();
@@ -20,14 +22,14 @@ chrome.runtime.onMessage.addListener((msg) => {
   return false;
 });
 
-async function play({ server, text, speed, voice }) {
+async function play({ server, text, speed, voice, use_llm }) {
   try {
     player.pause();
     status("synthesizing...");
     const r = await fetch(server + "/tts", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text, speed, voice }),
+      body: JSON.stringify({ text, speed, voice, use_llm: !!use_llm }),
     });
     if (!r.ok) {
       const err = await r.json().catch(() => ({}));

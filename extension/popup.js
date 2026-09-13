@@ -25,25 +25,72 @@ async function saveState() {
     speed: $("speed").value,
     voice: $("voice").value,
     model: $("model").value,
+    use_llm: $("use_llm").checked,
   });
 }
 
 async function restoreState() {
-  const s = await chrome.storage.local.get(["text", "server", "speed", "voice", "model"]);
+  const s = await chrome.storage.local.get(
+    ["text", "server", "speed", "voice", "model", "use_llm"]
+  );
   if (s.text) $("text").value = s.text;
   if (s.server) $("server").value = s.server;
   if (s.speed) $("speed").value = s.speed;
   if (s.voice) $("voice").value = s.voice;
   if (s.model) $("model").dataset.saved = s.model;
+  $("use_llm").checked = !!s.use_llm;
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function pingOffscreen(tries = 10) {
+  for (let i = 0; i < tries; i++) {
+    try {
+      const res = await chrome.runtime.sendMessage({ target: "offscreen", type: "PING" });
+      if (res && res.ok) return true;
+    } catch (e) {
+      await sleep(200);
+    }
+  }
+  return false;
 }
 
 async function ensureOffscreen() {
-  if (chrome.offscreen.hasDocument && (await chrome.offscreen.hasDocument())) return;
-  await chrome.offscreen.createDocument({
-    url: "offscreen.html",
-    reasons: ["AUDIO_PLAYBACK"],
-    justification: "Keep novel narration playing after the popup closes.",
+  if (!chrome.offscreen) return false;
+  try {
+    if (chrome.offscreen.hasDocument && (await chrome.offscreen.hasDocument())) {
+      return await pingOffscreen(3);
+    }
+    await chrome.offscreen.createDocument({
+      url: "offscreen.html",
+      reasons: ["AUDIO_PLAYBACK"],
+      justification: "Keep novel narration playing after the popup closes.",
+    });
+    return await pingOffscreen();
+  } catch (e) {
+    return false;
+  }
+}
+
+async function playFallback(params) {
+  // Old Chrome without offscreen API: play inside the popup.
+  // Audio stops when the popup closes.
+  setStatus("synthesizing... (popup playback)");
+  const r = await fetch(params.server + "/tts", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(params),
   });
+  if (!r.ok) {
+    const err = await r.json().catch(() => ({}));
+    throw new Error(err.detail || "HTTP " + r.status);
+  }
+  const url = URL.createObjectURL(await r.blob());
+  setStatus("playing (closes with popup)");
+  await new Audio(url).play();
+  setStatus("playing");
 }
 
 async function refreshVoices() {
@@ -99,6 +146,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   await refreshVoices();
   await refreshModels();
   ["text", "server", "speed"].forEach((id) => $(id).addEventListener("input", saveState));
+  $("use_llm").addEventListener("change", saveState);
   $("voice").addEventListener("change", saveState);
   $("model").addEventListener("change", async () => {
     await saveState();
@@ -140,7 +188,7 @@ $("preview").addEventListener("click", async () => {
     const r = await fetch(base() + "/normalize/preview", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: $("text").value }),
+      body: JSON.stringify({ text: $("text").value, use_llm: $("use_llm").checked }),
     });
     const data = await r.json();
     if (!r.ok) throw new Error(data.detail || r.statusText);
@@ -155,17 +203,21 @@ $("preview").addEventListener("click", async () => {
 
 $("speak").addEventListener("click", async () => {
   $("speak").disabled = true;
+  const params = {
+    server: base(),
+    text: $("text").value,
+    speed: parseFloat($("speed").value) || 1.0,
+    voice: $("voice").value,
+    use_llm: $("use_llm").checked,
+  };
   try {
-    await ensureOffscreen();
-    await chrome.runtime.sendMessage({
-      target: "offscreen",
-      type: "PLAY",
-      server: base(),
-      text: $("text").value,
-      speed: parseFloat($("speed").value) || 1.0,
-      voice: $("voice").value,
-    });
-    setStatus("sent to player...");
+    if (await ensureOffscreen()) {
+      await chrome.runtime.sendMessage({ target: "offscreen", type: "PLAY", ...params });
+      setStatus("sent to player...");
+    } else {
+      await playFallback(params);
+      $("speak").disabled = false;
+    }
   } catch (e) {
     setStatus("speak error: " + e.message);
     $("speak").disabled = false;
