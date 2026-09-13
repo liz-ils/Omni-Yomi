@@ -9,6 +9,7 @@ import soundfile as sf
 import yaml
 from fastapi import FastAPI
 from fastapi.responses import Response
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from server.pipeline import cleaner, normalizer, splitter
@@ -80,11 +81,6 @@ class TtsIn(BaseModel):
     use_llm: bool = False
 
 
-@app.get("/")
-def index() -> dict[str, object]:
-    return {"service": "Omni-Yomi", "endpoints": ["/health", "/normalize/preview", "/tts"]}
-
-
 @app.get("/health")
 def health() -> dict[str, object]:
     return {"tts_loaded": _tts is not None, "llm_model": _llm_model_id()}
@@ -106,3 +102,6 @@ def tts(body: TtsIn) -> Response:
     buf = io.BytesIO()
     sf.write(buf, np.concatenate(parts), SAMPLE_RATE, format="WAV")
     return Response(content=buf.getvalue(), media_type="audio/wav")
+
+
+app.mount("/", StaticFiles(directory="server/static", html=True), name="static")
