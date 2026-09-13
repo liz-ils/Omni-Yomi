@@ -2,6 +2,7 @@
 
 from pathlib import Path
 
+import numpy as np
 import soundfile as sf
 import torch
 
@@ -19,8 +20,11 @@ def load_model(device: str = "cuda:0") -> OmniVoice:
     )
 
 
+def generate(model: OmniVoice, text: str, **kwargs) -> np.ndarray:
+    return model.generate(text=text, **kwargs)[0]
+
+
 def speak(model: OmniVoice, text: str, out_path: str | Path, **kwargs) -> Path:
     out_path = Path(out_path)
-    audio = model.generate(text=text, **kwargs)
-    sf.write(str(out_path), audio[0], SAMPLE_RATE)
+    sf.write(str(out_path), generate(model, text, **kwargs), SAMPLE_RATE)
     return out_path
