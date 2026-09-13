@@ -13,6 +13,13 @@ button { margin: 4px 4px 4px 0; }
 </head>
 <body>
 <h1>Omni-Yomi</h1>
+<fieldset>
+<legend>声 (ボイスクローン)</legend>
+<label>声 <select id="voice"><option value="auto">auto</option></select></label>
+<input type="file" id="ref_audio" accept="audio/*" />
+<input id="ref_text" placeholder="リファレンス音声の書き起こし" size="36" />
+<button id="register">声を登録</button>
+</fieldset>
 <div>
 <button id="preview">プレビュー</button>
 <button id="speak">読み上げ</button>
@@ -27,6 +34,40 @@ button { margin: 4px 4px 4px 0; }
 "use strict";
 const $ = (id) => document.getElementById(id);
 const setStatus = (msg) => { $("status").textContent = msg; };
+
+async function refreshVoices() {
+  try {
+    const data = await (await fetch("/voices")).json();
+    const sel = $("voice");
+    sel.innerHTML = "";
+    data.voices.forEach((v) => {
+      const opt = document.createElement("option");
+      opt.value = v;
+      opt.textContent = v;
+      sel.appendChild(opt);
+    });
+  } catch (e) {
+    setStatus("voices error: " + e.message);
+  }
+}
+refreshVoices();
+
+$("register").addEventListener("click", async () => {
+  setStatus("registering...");
+  try {
+    const form = new FormData();
+    form.append("ref_audio", $("ref_audio").files[0]);
+    form.append("ref_text", $("ref_text").value);
+    const r = await fetch("/voices/register", { method: "POST", body: form });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.detail || r.statusText);
+    await refreshVoices();
+    $("voice").value = data.voice;
+    setStatus("registered: " + data.voice);
+  } catch (e) {
+    setStatus("register error: " + e.message);
+  }
+});
 
 $("preview").addEventListener("click", async () => {
   setStatus("previewing...");
@@ -56,6 +97,7 @@ $("speak").addEventListener("click", async () => {
         text: $("text").value,
         speed: parseFloat($("speed").value) || 1.0,
         use_llm: $("use_llm").checked,
+        voice: $("voice").value,
       }),
     });
     const blob = await r.blob();
