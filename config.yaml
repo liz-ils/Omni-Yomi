@@ -1,0 +1,5 @@
+llm:
+  # Swappable: LiquidAI/LFM2.5-1.2B-JP-202606 (default) / openbmb/MiniCPM5-2B
+  model: LiquidAI/LFM2.5-1.2B-JP-202606
+  device: cuda:0
+  cache: .cache/llm_reader.json
