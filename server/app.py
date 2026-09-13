@@ -80,6 +80,11 @@ class TtsIn(BaseModel):
     use_llm: bool = False
 
 
+@app.get("/")
+def index() -> dict[str, object]:
+    return {"service": "Omni-Yomi", "endpoints": ["/health", "/normalize/preview", "/tts"]}
+
+
 @app.get("/health")
 def health() -> dict[str, object]:
     return {"tts_loaded": _tts is not None, "llm_model": _llm_model_id()}
