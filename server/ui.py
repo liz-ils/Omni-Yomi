@@ -42,6 +42,9 @@ def preview_fn(text: str, use_llm: bool) -> str:
 
 
 def tts_fn(text: str, speed: float, use_llm: bool, voice: str) -> str:
+    chunks = build_spoken(text, use_llm)
+    if not chunks:
+        raise gr.Error("本文が空です")
     model = _get_tts()
     prompt = None
     if voice != "auto":
@@ -50,7 +53,7 @@ def tts_fn(text: str, speed: float, use_llm: bool, voice: str) -> str:
             raise gr.Error(f"voice '{voice}' is not registered")
     silence = np.zeros(int(SAMPLE_RATE * 0.2), dtype=np.float32)
     parts = []
-    for chunk in build_spoken(text, use_llm):
+    for chunk in chunks:
         parts.append(
             generate(
                 model,

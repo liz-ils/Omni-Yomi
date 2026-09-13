@@ -42,7 +42,11 @@ uv pip install omnivoice fugashi unidic-lite
 1. Double-click `start-server.bat` (local helper, not distributed; create it yourself)
 2. Open `http://127.0.0.1:8000/`, paste text, preview, play
 3. Voice cloning: register a 3-10s reference audio clip with its transcript
-4. Extension: load `extension/` in developer mode via `chrome://extensions`
+4. Extension: open `chrome://extensions`, enable developer mode,
+   "Load unpacked" and select `extension/`.
+   Only Narou (`ncode.syosetu.com`) and Kakuyomu are supported.
+   Reload pages opened before installation.
+   Popup input persists after closing
 
 API: `GET /health`, `POST /normalize/preview`, `POST /tts`,
 `POST /voices/register`, `GET /voices`,

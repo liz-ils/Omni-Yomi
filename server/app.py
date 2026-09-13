@@ -101,6 +101,9 @@ def preview(body: PreviewIn) -> dict[str, object]:
 
 @app.post("/tts")
 def tts(body: TtsIn) -> Response:
+    chunks = build_spoken(body.text, body.use_llm)
+    if not chunks:
+        raise HTTPException(400, "本文が空です")
     model = _get_tts()
     prompt = None
     if body.voice != "auto":
@@ -109,7 +112,7 @@ def tts(body: TtsIn) -> Response:
             raise HTTPException(400, f"voice '{body.voice}' is not registered")
     silence = np.zeros(int(SAMPLE_RATE * 0.2), dtype=np.float32)
     parts = []
-    for chunk in build_spoken(body.text, body.use_llm):
+    for chunk in chunks:
         parts.append(
             generate(
                 model,

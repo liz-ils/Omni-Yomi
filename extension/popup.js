@@ -12,6 +12,26 @@ async function activeTab() {
   return tab;
 }
 
+async function saveState() {
+  await chrome.storage.local.set({
+    text: $("text").value,
+    server: $("server").value,
+    speed: $("speed").value,
+  });
+}
+
+async function restoreState() {
+  const s = await chrome.storage.local.get(["text", "server", "speed"]);
+  if (s.text) $("text").value = s.text;
+  if (s.server) $("server").value = s.server;
+  if (s.speed) $("speed").value = s.speed;
+}
+
+restoreState();
+$("text").addEventListener("input", saveState);
+$("server").addEventListener("input", saveState);
+$("speed").addEventListener("input", saveState);
+
 $("extract").addEventListener("click", async () => {
   setStatus("extracting...");
   try {
@@ -22,6 +42,7 @@ $("extract").addEventListener("click", async () => {
       return;
     }
     $("text").value = res.paragraphs.join("\n");
+    await saveState();
     setStatus(`extracted: ${res.title} (${res.paragraphs.length} paras)`);
   } catch (e) {
     setStatus("extract error: " + e.message);
@@ -57,6 +78,10 @@ $("speak").addEventListener("click", async () => {
         speed: parseFloat($("speed").value) || 1.0,
       }),
     });
+    if (!r.ok) {
+      const err = await r.json().catch(() => ({}));
+      throw new Error(err.detail || ("HTTP " + r.status));
+    }
     const blob = await r.blob();
     $("player").src = URL.createObjectURL(blob);
     await $("player").play();

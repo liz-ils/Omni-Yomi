@@ -41,7 +41,11 @@ uv pip install omnivoice fugashi unidic-lite
 1. `start-server.bat` をダブルクリック (配布物には含めない、各自作成)
 2. `http://127.0.0.1:8000/` を開いて本文を貼り付け→プレビュー→読み上げ
 3. 声のクローン: 操作ページの「声」欄でリファレンス音声 (3-10秒) と書き起こしを登録
-4. 拡張機能: `chrome://extensions` でデベロッパーモード→ `extension/` を読込
+4. 拡張機能: `chrome://extensions` でデベロッパーモードをON→
+   「パッケージ化されていない拡張機能を読み込む」で `extension/` を選択。
+   対応はなろう (`ncode.syosetu.com`) とカクヨムのみ。
+   インストール後に開いていたページはリロードすること。
+   入力内容はポップアップを閉じても保持される
 
 API: `GET /health`, `POST /normalize/preview`, `POST /tts`,
 `POST /voices/register`, `GET /voices`,
