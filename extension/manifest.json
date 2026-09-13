@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "Omni-Yomi",
+  "version": "0.1.0",
+  "description": "小説本文を抽出してローカルのOmni-Yomiサーバーで読み上げます。",
+  "permissions": ["activeTab", "scripting"],
+  "host_permissions": ["http://127.0.0.1:8000/*"],
+  "action": { "default_popup": "popup.html" },
+  "content_scripts": [
+    {
+      "matches": ["https://ncode.syosetu.com/*", "https://kakuyomu.jp/*"],
+      "js": ["content.js"]
+    }
+  ]
+}
