@@ -18,8 +18,26 @@ async function activeTab() {
   return tab;
 }
 
+const memStore = {};
+
+async function safeSet(items) {
+  try {
+    await chrome.storage.local.set(items);
+  } catch (e) {
+    Object.assign(memStore, items);
+  }
+}
+
+async function safeGet(keys) {
+  try {
+    return await chrome.storage.local.get(keys);
+  } catch (e) {
+    return Object.fromEntries(keys.map((k) => [k, memStore[k]]));
+  }
+}
+
 async function saveState() {
-  await chrome.storage.local.set({
+  await safeSet({
     text: $("text").value,
     server: $("server").value,
     speed: $("speed").value,
@@ -30,9 +48,7 @@ async function saveState() {
 }
 
 async function restoreState() {
-  const s = await chrome.storage.local.get(
-    ["text", "server", "speed", "voice", "model", "use_llm"]
-  );
+  const s = await safeGet(["text", "server", "speed", "voice", "model", "use_llm"]);
   if (s.text) $("text").value = s.text;
   if (s.server) $("server").value = s.server;
   if (s.speed) $("speed").value = s.speed;
@@ -105,7 +121,7 @@ async function refreshVoices() {
       opt.textContent = v;
       sel.appendChild(opt);
     });
-    const saved = (await chrome.storage.local.get(["voice"])).voice;
+    const saved = (await safeGet(["voice"])).voice;
     if (saved && data.voices.includes(saved)) sel.value = saved;
     else if (data.voices.includes(cur)) sel.value = cur;
   } catch (e) {
@@ -131,10 +147,14 @@ async function refreshModels() {
   }
 }
 
+let lastPlayerStatus = "";
+let speakWatchdog = 0;
+
 chrome.runtime.onMessage.addListener((msg) => {
   if (msg && msg.target === "popup" && msg.type === "STATUS") {
+    lastPlayerStatus = msg.text;
     setStatus(msg.text);
-    if (["ended", "stopped"].includes(msg.text) || msg.text.startsWith("play error")) {
+    if (["ended", "stopped", "playing"].includes(msg.text) || msg.text.startsWith("play error")) {
       $("speak").disabled = false;
     }
   }
@@ -212,8 +232,16 @@ $("speak").addEventListener("click", async () => {
   };
   try {
     if (await ensureOffscreen()) {
+      lastPlayerStatus = "";
       await chrome.runtime.sendMessage({ target: "offscreen", type: "PLAY", ...params });
       setStatus("sent to player...");
+      clearTimeout(speakWatchdog);
+      speakWatchdog = setTimeout(() => {
+        if (lastPlayerStatus === "") {
+          setStatus("no response from player (拡張を再読み込みしてください)");
+          $("speak").disabled = false;
+        }
+      }, 20000);
     } else {
       await playFallback(params);
       $("speak").disabled = false;
